@@ -1,7 +1,7 @@
 # DSA-Project-Playlist
 members:
-Ang, Chellzie
-Baquilid, Charmaine
-Ramiso, Modesthea
-Solon, Shekinah
-Tee, Kim Hie
+/nAng, Chellzie
+/nBaquilid, Charmaine
+/nRamiso, Modesthea
+/nSolon, Shekinah
+/nTee, Kim Hie
