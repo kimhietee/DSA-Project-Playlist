@@ -1,0 +1,55 @@
+{
+    "Supercell": {
+        "Kimi no Shiranai Monogatari": {
+            "Album": "Greatest Hits",
+            "Duration": "5:45",
+            "Genre": "Pop"
+        },
+        "Utakata Hanabi": {
+            "Album": "Greatest Hits",
+            "Duration": "6:02",
+            "Genre": "Sad"
+        }
+    },
+    "Halca": {
+        "Majolica Pallete": {
+            "Album": "My favorites",
+            "Duration": "4:00",
+            "Genre": "Pop Rock"
+        },
+        "Untitled Track 1": {
+            "Album": "My favorites",
+            "Duration": "1:23",
+            "Genre": "Unknown"
+        },
+        "Untitled Track 2": {
+            "Album": "chill",
+            "Duration": "4:56",
+            "Genre": "Unknown"
+        }
+    },
+    "Toby Fox": {
+        "Megalovania": {
+            "Album": "Undertale",
+            "Duration": "4:08",
+            "Genre": "Electronic"
+        },
+        "Hopes and Dreams": {
+            "Album": "Undertale",
+            "Duration": "5:09",
+            "Genre": "Electronic"
+        }
+    },
+    "Yoko Kanno": {
+        "Tank!": {
+            "Album": "Cowboy Bebop",
+            "Duration": "1:34",
+            "Genre": "Jazz"
+        },
+        "The Real Folk Blues": {
+            "Album": "Cowboy Bebop",
+            "Duration": "3:17",
+            "Genre": "Jazz"
+        }
+    }
+}

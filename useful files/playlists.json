@@ -1,0 +1,28 @@
+{
+    "Gaming Anthems": {
+        "name": "Gaming Anthems",
+        "tracks": [
+            {
+                "artist": "Toby Fox",
+                "track": "Megalovania"
+            },
+            {
+                "artist": "Toby Fox",
+                "track": "Hopes and Dreams"
+            }
+        ]
+    },
+    "Anime Favorites": {
+        "name": "Anime Favorites",
+        "tracks": [
+            {
+                "artist": "Yoko Kanno",
+                "track": "Tank!"
+            },
+            {
+                "artist": "Yoko Kanno",
+                "track": "The Real Folk Blues"
+            }
+        ]
+    }
+}
