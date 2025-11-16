@@ -1,11 +1,37 @@
+track = [
+    {"title": "",
+    "artist": "",
+    "album": "",
+    "duration": "00:00"},
+    {"title": "",
+    "artist": "",
+    "album": "",
+    "duration": "00:00"},
+    {"title": "",
+    "artist": "",
+    "album": "",
+    "duration": "00:00"},
+    {"title": "",
+    "artist": "",
+    "album": "",
+    "duration": "00:00"},
+]
+
+
+# -----------------------------------------------------------------------
 def display_playlist():
     print("=" * 113)
     print("{0:>64}".format("(Playlist Name)"))
     print("=" * 113)
     print("| {0:<40} | {1:<20} | {2:<30} | {3:<10} |".format("Title", "Artist", "Album", "Duration"))
     print("=" * 113)
-    print()
-    print("=" * 113)
+    for track in tracks:
+        print("{0:<40} | {1:<20} | {2:<30} | {3:<10}".format(
+            track["title"],
+            track["artist"],
+            track["album"],
+            track["duration"]
+        ))
 
 while True:
     print("=" * 113)
