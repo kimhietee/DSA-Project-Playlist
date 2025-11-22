@@ -1,268 +1,484 @@
-import json
-import random
-from playsound import playsound
+import os
+import time
+from math import ceil
 
-SONG_DB = "songs.json"
-queue = []
+#change the file path 
+from track import Track
+from library import MusicLibrary
+from playlist import Playlist
+from queue_system import MusicQueue
+from utils.duration import seconds_to_mmss
+from utils.file_manager import FileManager
 
-# ------------------- Helper Functions -------------------
-def load_songs():
-    with open(SONG_DB, "r") as f:
-        return json.load(f)
+# --- File Paths ---
+DATA_DIR = "data"
+TRACKS_FILE = os.path.join(DATA_DIR, "tracks.json")
+PLAYLISTS_FILE = os.path.join(DATA_DIR, "playlists.json")
+QUEUE_FILE = os.path.join(DATA_DIR, "queue.json")
 
-def save_songs(data):
-    with open(SONG_DB, "w") as f:
-        json.dump(data, f, indent=4)
 
-# ------------------- Song Management -------------------
-def add_song():
-    title = input("Enter song title: ")
-    album = input("Enter album: ")
-    artist = input("Enter artist: ")
-    duration = input("Enter duration (e.g. 3:45): ")
-    genre = input("Enter genre: ")
-    file_path = input("Enter file path: ")
+# --- Setup ---
+def ensure_data_files():
+    os.makedirs(DATA_DIR, exist_ok=True)
 
-    data = load_songs()
-    data["songs"].append({
-        "title": title,
-        "album": album,
-        "artist": artist,
-        "duration": duration,
-        "genre": genre,
-        "file_path": file_path
-    })
+    if not os.path.exists(TRACKS_FILE):
+        FileManager.save(TRACKS_FILE, [])
 
-    save_songs(data)
-    print("🎵 Song '{}' added successfully!\n".format(title))
+    if not os.path.exists(PLAYLISTS_FILE):
+        FileManager.save(PLAYLISTS_FILE, {})
 
-def view_songs():
-    data = load_songs()
-    if not data["songs"]:
-        print("No songs available yet! 😢\n")
+    if not os.path.exists(QUEUE_FILE):
+        FileManager.save(QUEUE_FILE, {})
+
+
+def pause(msg="Press Enter to continue..."):
+    input("\n{}".format(msg))
+
+
+# ------------------------------
+# PLAYLIST MANAGER
+# ------------------------------
+class PlaylistManager:
+    def __init__(self, file_path=PLAYLISTS_FILE):
+        self.file_path = file_path
+        self.load()
+
+    def load(self):
+        data = FileManager.load(self.file_path)
+        if not isinstance(data, dict):
+            data = {}
+        self.data = data
+
+    def save(self):
+        FileManager.save(self.file_path, self.data)
+
+    def list_playlist_names(self):
+        return list(self.data.keys())
+
+    def create_playlist(self, name):
+        if name in self.data:
+            return False
+        self.data[name] = []
+        self.save()
+        return True
+
+    def delete_playlist(self, name):
+        if name in self.data:
+            del self.data[name]
+            self.save()
+            return True
+        return False
+
+    def add_track_to_playlist(self, playlist_name, track):
+        if playlist_name not in self.data:
+            return False, "Playlist does not exist."
+
+        for t in self.data[playlist_name]:
+            if t["title"] == track.title and t["artist"] == track.artist and t["duration"] == track.duration:
+                return False, "Track already in playlist."
+
+        self.data[playlist_name].append(track.to_dict())
+        self.save()
+        return True, "Track added."
+
+    def get_playlist_tracks(self, playlist_name):
+        return [Track.from_dict(t) for t in self.data.get(playlist_name, [])]
+
+    def playlist_total_duration_seconds(self, playlist_name):
+        total = 0
+        for t in self.data.get(playlist_name, []):
+            m, s = map(int, t["duration"].split(":"))
+            total += m * 60 + s
+        return total
+
+
+# ============================
+#      DISPLAY HELPERS
+# ============================
+def display_tracks(tracks, page=1, per_page=10):
+    total = len(tracks)
+    if total == 0:
+        print("(No tracks found)\n")
         return
 
-    print("\nAvailable Songs:")
-    for i, song in enumerate(data["songs"]):
-        print("{}. {} - {} | {} • {} ({})".format(
-            i+1,
-            song["title"],
-            song["album"],
-            song["artist"],
-            song["duration"],
-            song["genre"]
-        ))
-    print("")
+    pages = ceil(total / per_page)
+    start = (page - 1) * per_page
+    end = min(start + per_page, total)
 
-def play_song():
-    data = load_songs()
+    for i in range(start, end):
+        t = tracks[i]
+        print("{}. {} – {} ({})".format(i + 1, t.title, t.display_artists(), t.duration))
 
-    if not data["songs"]:
-        print("No songs to play! 😢\n")
-        return
+    print("\n<Page {} of {}>".format(page, pages))
 
-    view_songs()
 
-    try:
-        choice = int(input("Select song number to play: ")) - 1
-        if choice < 0 or choice >= len(data["songs"]):
-            print("Invalid selection 😅\n")
-            return
-    except ValueError:
-        print("Please type a number 💕\n")
-        return
-
-    song = data["songs"][choice]
-    print("🎶 Playing '{}' by {} ({})".format(song["title"], song["artist"], song["duration"]))
-    playsound(song["file_path"])
-
-# ------------------- Search -------------------
-def search_song():
-    query = input("Search songs: ").lower()
-    data = load_songs()
-
-    results = [
-        song for song in data["songs"]
-        if query in song["title"].lower()
-        or query in song["album"].lower()
-        or query in song["artist"].lower()
-        or query in song["genre"].lower()
-    ]
-
-    if not results:
-        print("No matching songs found 😢\n")
-        return
-
-    print("\nSearch Results:")
-    for i, song in enumerate(results):
-        print("{}. {} - {} | {} • {} ({})".format(
-            i+1,
-            song["title"],
-            song["album"],
-            song["artist"],
-            song["duration"],
-            song["genre"]
-        ))
-    print("")
-
-# ------------------- Shuffle -------------------
-def shuffle_play():
-    data = load_songs()
-
-    if not data["songs"]:
-        print("No songs to shuffle 😢\n")
-        return
-
-    shuffled = data["songs"][:]
-    random.shuffle(shuffled)
-
-    print("🔀 Shuffling {} songs...".format(len(shuffled)))
-
-    for song in shuffled:
-        print("🎶 Playing '{}' by {} ({})".format(song["title"], song["artist"], song["duration"]))
-        playsound(song["file_path"])
-
-# ------------------- Playlists -------------------
-def add_playlist():
-    name = input("Playlist name: ")
-    data = load_songs()
-
-    if name in data["playlists"]:
-        print("Playlist already exists! 😅\n")
-        return
-
-    data["playlists"][name] = []
-    save_songs(data)
-
-    print("✅ Playlist '{}' created!\n".format(name))
-
-def add_song_to_playlist():
-    data = load_songs()
-
-    if not data["playlists"]:
-        print("No playlists available 😢\n")
-        return
-
-    print("Available playlists:")
-    for playlist in data["playlists"]:
-        print("- {}".format(playlist))
-
-    playlist = input("Choose playlist: ")
-
-    if playlist not in data["playlists"]:
-        print("Playlist does not exist 😅\n")
-        return
-
-    view_songs()
-
-    try:
-        choice = int(input("Select song number to add: ")) - 1
-        if choice < 0 or choice >= len(data["songs"]):
-            print("Invalid selection 😅")
-            return
-    except ValueError:
-        print("Please type a number 💕")
-        return
-
-    song_title = data["songs"][choice]["title"]
-
-    data["playlists"][playlist].append(song_title)
-    save_songs(data)
-
-    print("🎵 '{}' added to playlist '{}'!\n".format(song_title, playlist))
-
-def play_playlist():
-    data = load_songs()
-
-    if not data["playlists"]:
-        print("No playlists available 😢\n")
-        return
-
-    print("Playlists:")
-    for playlist in data["playlists"]:
-        print("- {}".format(playlist))
-
-    playlist = input("Choose playlist: ")
-
-    if playlist not in data["playlists"]:
-        print("Playlist does not exist 😅\n")
-        return
-
-    print("🎶 Playing playlist: {}".format(playlist))
-
-    for title in data["playlists"][playlist]:
-        for song in data["songs"]:
-            if song["title"] == title:
-                print("🎵 {} - {} ({})".format(song["title"], song["artist"], song["duration"]))
-                playsound(song["file_path"])
-
-# ------------------- Queue System -------------------
-def add_to_queue():
-    data = load_songs()
-    view_songs()
-
-    try:
-        choice = int(input("Select song to add to queue: ")) - 1
-        if choice < 0 or choice >= len(data["songs"]):
-            print("Invalid selection 😅\n")
-            return
-    except ValueError:
-        print("Please type a number 💕\n")
-        return
-
-    song = data["songs"][choice]
-    queue.append(song)
-
-    print("🎵 '{}' added to queue!\n".format(song["title"]))
-
-def play_queue():
-    global queue
-
-    if not queue:
-        print("Queue is empty 😢\n")
-        return
-
-    print("▶️ Playing queue ({} songs)...".format(len(queue)))
-
-    while queue:
-        song = queue.pop(0)
-        print("🎶 {} - {} ({})".format(song["title"], song["artist"], song["duration"]))
-        playsound(song["file_path"])
-
-# ------------------- Main Menu -------------------
-def menu():
+# ============================
+#       LIBRARY MENU
+# ============================
+def library_menu(lib, pm):
     while True:
-        print("\n--- Terminal Music Player ❤️ ---")
-        print("1. Add Song")
-        print("2. View Songs")
-        print("3. Play Song")
-        print("4. Search Songs")
-        print("5. Shuffle Play")
-        print("6. Create Playlist")
-        print("7. Add Song to Playlist")
-        print("8. Play Playlist")
-        print("9. Add to Queue")
-        print("10. Play Queue")
-        print("0. Exit")
+        os.system("cls" if os.name == "nt" else "clear")
+        print("=== MUSIC LIBRARY ===\n")
+        print("[1] List Tracks")
+        print("[2] Add Track")
+        print("[3] Search Track")
+        print("[4] Add Track to Playlist")
+        print("[5] Back")
 
-        choice = input("Choose an option: ")
+        choice = input("\nChoose: ").strip()
 
-        if choice == "1": add_song()
-        elif choice == "2": view_songs()
-        elif choice == "3": play_song()
-        elif choice == "4": search_song()
-        elif choice == "5": shuffle_play()
-        elif choice == "6": add_playlist()
-        elif choice == "7": add_song_to_playlist()
-        elif choice == "8": play_playlist()
-        elif choice == "9": add_to_queue()
-        elif choice == "10": play_queue()
-        elif choice == "0":
-            print("Goodbye ❤️")
-            break
+        # --- List Tracks ---
+        if choice == "1":
+            os.system("cls" if os.name == "nt" else "clear")
+            print("=== TRACK LIST ===\n")
+            display_tracks(lib.list_tracks(), 1)
+            pause()
+
+        # --- Add Track ---
+        elif choice == "2":
+            os.system("cls" if os.name == "nt" else "clear")
+            print("=== ADD NEW TRACK ===\n")
+
+            title = input("Title: ")
+            artist = input("Main Artist: ")
+            additional = input("Additional Artists (comma separated): ")
+            album = input("Album: ")
+            duration = input("Duration (mm:ss): ")
+
+            additional_list = [a.strip() for a in additional.split(",")] if additional else []
+
+            try:
+                m, s = map(int, duration.split(":"))
+            except:
+                print("\nInvalid duration format.")
+                pause()
+                continue
+
+            track = Track(title, artist, additional_list, album, "{:02d}:{:02d}".format(m, s))
+            lib.add_track(track)
+
+            print("\nTrack '{}' added successfully.".format(title))
+            pause()
+
+        # --- Search Track ---
+        elif choice == "3":
+            keyword = input("\nEnter keyword: ")
+            matches = [t for t in lib.list_tracks() if keyword.lower() in t.title.lower()]
+
+            print("\n=== SEARCH RESULTS ===\n")
+            display_tracks(matches, 1)
+            pause()
+
+        # --- Add Track to Playlist ---
+        elif choice == "4":
+            keyword = input("\nSearch for track: ")
+            found = [t for t in lib.list_tracks() if keyword.lower() in t.title.lower()]
+
+            if not found:
+                print("\nNo tracks found.")
+                pause()
+                continue
+
+            print("\nSelect a track:")
+            for i, t in enumerate(found, 1):
+                print("{}. {} – {} ({})".format(i, t.title, t.artist, t.duration))
+
+            track_choice = input("\nChoose track number: ")
+            if not track_choice.isdigit():
+                pause("\nInvalid.")
+                continue
+
+            track = found[int(track_choice) - 1]
+
+            playlists = pm.list_playlist_names()
+            print("\nChoose playlist:")
+            for i, name in enumerate(playlists, 1):
+                print("[{}] {}".format(i, name))
+
+            p_choice = input("\nPlaylist number: ")
+            if not p_choice.isdigit():
+                pause("Invalid.")
+                continue
+
+            playlist_name = playlists[int(p_choice) - 1]
+            ok, msg = pm.add_track_to_playlist(playlist_name, track)
+
+            print("\n{}".format(msg))
+            pause()
+
         else:
-            print("Invalid option 😅 Try again!")
+            break
 
+
+# ============================
+#      SINGLE PLAYLIST MENU
+# ============================
+def view_single_playlist(pm, name, lib, queue):
+    tracks = pm.get_playlist_tracks(name)
+    per_page = 10
+    page = 1
+
+    while True:
+        os.system("cls" if os.name == "nt" else "clear")
+        print("=== PLAYLIST: {} ===\n".format(name))
+
+        display_tracks(tracks, page)
+
+        total_dur = seconds_to_mmss(pm.playlist_total_duration_seconds(name))
+        print("\nTotal Duration: {}\n".format(total_dur))
+
+        print("[a] Add Track")
+        print("[r] Remove Track")
+        print("[p] Play Playlist")
+        print("[n] Next Page")
+        print("[b] Back")
+
+        choice = input("\nChoose: ").strip().lower()
+
+        if choice == "a":
+            keyword = input("\nSearch track title: ")
+            found = [t for t in lib.list_tracks() if keyword.lower() in t.title.lower()]
+
+            if not found:
+                print("\nNo results.")
+                pause()
+                continue
+
+            print("\nSelect track to add:")
+            for i, t in enumerate(found, 1):
+                print("{}. {} – {}".format(i, t.title, t.artist))
+
+            pick = input("\nChoose number: ")
+            if pick.isdigit() and 1 <= int(pick) <= len(found):
+                ok, msg = pm.add_track_to_playlist(name, found[int(pick) - 1])
+                print("\n{}".format(msg))
+            pause()
+
+            tracks = pm.get_playlist_tracks(name)
+
+        elif choice == "r":
+            num = input("\nTrack number to remove: ")
+            if num.isdigit():
+                idx = int(num) - 1
+                if 0 <= idx < len(tracks):
+                    td = tracks[idx].to_dict()
+                    for i, item in enumerate(pm.data[name]):
+                        if item["title"] == td["title"]:
+                            pm.data[name].pop(i)
+                            pm.save()
+                            print("\nTrack removed.")
+                            break
+                    tracks = pm.get_playlist_tracks(name)
+                else:
+                    print("\nInvalid.")
+            pause()
+
+        elif choice == "p":
+            queue.set_queue(tracks)
+            print("\nQueue loaded from playlist.")
+            pause()
+            queue_menu(queue)
+            break
+
+        elif choice == "n":
+            page += 1
+
+        else:
+            break
+
+
+# ============================
+#      PLAYLISTS MENU
+# ============================
+def playlists_menu(pm, lib):
+    while True:
+        os.system("cls" if os.name == "nt" else "clear")
+        print("=== PLAYLISTS ===\n")
+
+        names = pm.list_playlist_names()
+
+        if names:
+            for i, name in enumerate(names, 1):
+                dur = seconds_to_mmss(pm.playlist_total_duration_seconds(name))
+                print("[{}] {} — {}".format(i, name, dur))
+        else:
+            print("(No playlists yet)")
+
+        print("\n[c] Create Playlist")
+        print("[v] View Playlist")
+        print("[d] Delete Playlist")
+        print("[b] Back")
+
+        choice = input("\nChoose: ").strip().lower()
+
+        if choice == "c":
+            n = input("\nEnter playlist name: ")
+            ok = pm.create_playlist(n)
+            print("\nCreated." if ok else "\nPlaylist exists.")
+            pause()
+
+        elif choice == "v":
+            num = input("\nPlaylist number: ")
+            if num.isdigit() and 1 <= int(num) <= len(names):
+                view_single_playlist(pm, names[int(num) - 1], lib, queue)
+            else:
+                print("\nInvalid.")
+                pause()
+
+        elif choice == "d":
+            n = input("\nName to delete: ")
+            print("\nDeleted." if pm.delete_playlist(n) else "\nNot found.")
+            pause()
+
+        else:
+            break
+
+
+# ============================
+#          QUEUE MENU
+# ============================
+def queue_menu(queue):
+    while True:
+        os.system("cls" if os.name == "nt" else "clear")
+        print("=== QUEUE ===\n")
+
+        if not queue.tracks:
+            print("(Queue empty)\n")
+        else:
+            cur = queue.current()
+            print("Now Playing: {} – {} ({})\n".format(
+                cur["title"], cur["artist"], cur["duration"]
+            ))
+            print("Repeat: {}".format("ON" if queue.repeat else "OFF"))
+            print("Shuffle: {}\n".format("ON" if queue.shuffled else "OFF"))
+
+        print("[1] Play")
+        print("[2] Next")
+        print("[3] Previous")
+        print("[4] Toggle Repeat")
+        print("[5] Toggle Shuffle")
+        print("[6] Add Track")
+        print("[7] Add Playlist")
+        print("[8] Clear Queue")
+        print("[9] Back")
+
+        choice = input("\nChoose: ")
+
+        if choice == "1":
+            print("\nPlaying...\n")
+            time.sleep(0.5)
+            pause()
+
+        elif choice == "2":
+            nxt = queue.next()
+            if nxt:
+                print("\nNow: {} – {}".format(nxt["title"], nxt["artist"]))
+            else:
+                print("\nEnd of queue.")
+            pause()
+
+        elif choice == "3":
+            prev = queue.previous()
+            if prev:
+                print("\nNow: {} – {}".format(prev["title"], prev["artist"]))
+            else:
+                print("\nStart of queue.")
+            pause()
+
+        elif choice == "4":
+            queue.repeat = not queue.repeat
+            queue.save()
+            print("\nRepeat toggled.")
+            pause()
+
+        elif choice == "5":
+            queue.shuffle()
+            print("\nShuffle toggled.")
+            pause()
+
+        elif choice == "6":
+            keyword = input("\nSearch track: ")
+            found = [t for t in lib.list_tracks() if keyword.lower() in t.title.lower()]
+
+            if not found:
+                print("\nNothing found.")
+                pause()
+                continue
+
+            print("\nSelect track:")
+            for i, t in enumerate(found, 1):
+                print("{}. {} – {}".format(i, t.title, t.artist))
+
+            pick = input("\nNumber: ")
+            if pick.isdigit() and 1 <= int(pick) <= len(found):
+                queue.tracks.append(found[int(pick) - 1].to_dict())
+                queue.save()
+                print("\nAdded.")
+            pause()
+
+        elif choice == "7":
+            pl = pm.list_playlist_names()
+            print("\nChoose playlist:")
+            for i, p in enumerate(pl, 1):
+                print("[{}] {}".format(i, p))
+
+            pick = input("\nNumber: ")
+            if pick.isdigit() and 1 <= int(pick) <= len(pl):
+                tracks = pm.get_playlist_tracks(pl[int(pick) - 1])
+                queue.tracks.extend([t.to_dict() for t in tracks])
+                queue.save()
+                print("\nPlaylist added to queue.")
+            pause()
+
+        elif choice == "8":
+            queue.tracks = []
+            queue.index = 0
+            queue.save()
+            print("\nQueue cleared.")
+            pause()
+
+        else:
+            break
+
+
+# ============================
+#         MAIN RUNNER
+# ============================
+def main_menu():
+    while True:
+        os.system("cls" if os.name == "nt" else "clear")
+        print("=== SIMPLE SPOTIFY-LIKE PLAYER ===\n")
+        print("[1] Music Library")
+        print("[2] Playlists")
+        print("[3] Queue")
+        print("[4] Exit")
+
+        c = input("\nChoose: ")
+
+        if c == "1":
+            library_menu(lib, pm)
+
+        elif c == "2":
+            playlists_menu(pm, lib)
+
+        elif c == "3":
+            queue_menu(queue)
+
+        elif c == "4":
+            print("\nGoodbye sweetheart ❤️")
+            break
+
+        else:
+            pause("Invalid option.")
+
+
+# ============================
+#         PROGRAM START
+# ============================
 if __name__ == "__main__":
-    menu()
+    ensure_data_files()
+    lib = MusicLibrary(file_path=TRACKS_FILE)
+    pm = PlaylistManager(file_path=PLAYLISTS_FILE)
+    queue = MusicQueue(file_path=QUEUE_FILE)
 
+    main_menu()
