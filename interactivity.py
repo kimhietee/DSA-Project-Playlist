@@ -258,10 +258,11 @@ def menu():
         elif choice == "9": add_to_queue()
         elif choice == "10": play_queue()
         elif choice == "0":
-            print("Goodbye, sweetheart ❤️")
+            print("Goodbye ❤️")
             break
         else:
             print("Invalid option 😅 Try again!")
 
 if __name__ == "__main__":
     menu()
+
