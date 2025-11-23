@@ -2,7 +2,6 @@ import os
 import time
 from math import ceil
 
-#change the file path 
 from track import Track
 from library import MusicLibrary
 from playlist import Playlist
@@ -10,14 +9,14 @@ from queue_system import MusicQueue
 from utils.duration import seconds_to_mmss
 from utils.file_manager import FileManager
 
-# --- File Paths ---
+#File Paths---------------------------
 DATA_DIR = "data"
 TRACKS_FILE = os.path.join(DATA_DIR, "tracks.json")
 PLAYLISTS_FILE = os.path.join(DATA_DIR, "playlists.json")
 QUEUE_FILE = os.path.join(DATA_DIR, "queue.json")
 
 
-# --- Setup ---
+#Setup------------------------------------
 def ensure_data_files():
     os.makedirs(DATA_DIR, exist_ok=True)
 
@@ -35,9 +34,7 @@ def pause(msg="Press Enter to continue..."):
     input("\n{}".format(msg))
 
 
-# ------------------------------
-# PLAYLIST MANAGER
-# ------------------------------
+#PLAYLIST MANAGER----------------------------------
 class PlaylistManager:
     def __init__(self, file_path=PLAYLISTS_FILE):
         self.file_path = file_path
