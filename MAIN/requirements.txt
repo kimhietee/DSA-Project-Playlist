@@ -1,0 +1,5 @@
+# Music Playlist System - Requirements
+# No external dependencies required!
+# This project uses only Python standard library
+
+Python >= 3.6

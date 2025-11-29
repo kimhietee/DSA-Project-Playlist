@@ -1,0 +1,172 @@
+{
+  "playlists": [
+    {
+      "name": "Pop Hits",
+      "tracks": [
+        {
+          "title": "Gangnam Style",
+          "artist": "PSY",
+          "album": "Psy 6 (Six Rules), Part 1",
+          "duration": "03:39",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349650"
+        },
+        {
+          "title": "Call Me Maybe",
+          "artist": "Carly Rae Jepsen",
+          "album": "Kiss",
+          "duration": "03:13",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349692"
+        },
+        {
+          "title": "Timber",
+          "artist": "Kesha",
+          "album": "Cannibal",
+          "duration": "03:24",
+          "additional_artists": "Pitbull",
+          "date_added": "2025-11-29T19:34:39.349697"
+        },
+        {
+          "title": "Roar",
+          "artist": "Katy Perry",
+          "album": "Prism",
+          "duration": "03:44",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349701"
+        },
+        {
+          "title": "I Knew You Were Trouble",
+          "artist": "Taylor Swift",
+          "album": "Red",
+          "duration": "03:40",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349704"
+        }
+      ],
+      "date_created": "2025-11-29T19:34:39.963333"
+    },
+    {
+      "name": "Dance Party",
+      "tracks": [
+        {
+          "title": "Gangnam Style",
+          "artist": "PSY",
+          "album": "Psy 6 (Six Rules), Part 1",
+          "duration": "03:39",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349650"
+        },
+        {
+          "title": "Call Me Maybe",
+          "artist": "Carly Rae Jepsen",
+          "album": "Kiss",
+          "duration": "03:13",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349692"
+        },
+        {
+          "title": "Timber",
+          "artist": "Kesha",
+          "album": "Cannibal",
+          "duration": "03:24",
+          "additional_artists": "Pitbull",
+          "date_added": "2025-11-29T19:34:39.349697"
+        },
+        {
+          "title": "Domino",
+          "artist": "Jessie J",
+          "album": "Who Is Jessie J?",
+          "duration": "03:52",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349712"
+        },
+        {
+          "title": "Payphone",
+          "artist": "Maroon 5",
+          "album": "Overexposed",
+          "duration": "03:51",
+          "additional_artists": "Wiz Khalifa",
+          "date_added": "2025-11-29T19:34:39.349715"
+        }
+      ],
+      "date_created": "2025-11-29T19:34:39.964620"
+    },
+    {
+      "name": "Workout Mix",
+      "tracks": [
+        {
+          "title": "Blinded in Chains",
+          "artist": "Avenged Sevenfold",
+          "album": "Nightmare",
+          "duration": "06:34",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349718"
+        },
+        {
+          "title": "GAS GAS GAS EXTENDED MIX",
+          "artist": "Manuel",
+          "album": "GAS",
+          "duration": "04:21",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349728"
+        },
+        {
+          "title": "Heat Waves",
+          "artist": "Glass Animals",
+          "album": "Dreamland",
+          "duration": "03:56",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349735"
+        },
+        {
+          "title": "Anti-Hero",
+          "artist": "Taylor Swift",
+          "album": "Midnights",
+          "duration": "03:20",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349741"
+        }
+      ],
+      "date_created": "2025-11-29T19:34:40.024465"
+    },
+    {
+      "name": "Chill Vibes",
+      "tracks": [
+        {
+          "title": "I Knew You Were Trouble",
+          "artist": "Taylor Swift",
+          "album": "Red",
+          "duration": "03:40",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349704"
+        },
+        {
+          "title": "Counting Stars",
+          "artist": "OneRepublic",
+          "album": "Native",
+          "duration": "04:17",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349721"
+        },
+        {
+          "title": "Bad Romance",
+          "artist": "Lady Gaga",
+          "album": "The Fame Monster",
+          "duration": "04:55",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349725"
+        },
+        {
+          "title": "Blinding Lights",
+          "artist": "The Weeknd",
+          "album": "After Hours",
+          "duration": "03:20",
+          "additional_artists": "",
+          "date_added": "2025-11-29T19:34:39.349738"
+        }
+      ],
+      "date_created": "2025-11-29T19:34:40.045661"
+    }
+  ]
+}

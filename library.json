@@ -1,1 +1,24 @@
-[]
+[
+    {
+        "title": "adsaddsada",
+        "artist": "asddad",
+        "album": "asdadad",
+        "duration": "adad",
+        "genre": "asds"
+    },
+    {
+        "title": "asddsa",
+        "artist": "",
+        "album": "asd",
+        "duration": "asd",
+        "genre": "d"
+    },
+
+    {
+        "title": "qwewqeqweqw",
+        "artist": "qwewqe",
+        "album": "qwewqe",
+        "duration": "ewqeeee",
+        "genre": "wqeqwew"
+    }
+]
