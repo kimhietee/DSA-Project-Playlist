@@ -21,27 +21,20 @@ def save_data(file, data):
 # Display Playlist (ASCII Table)
 # ===========================
 
-def display_playlist(name, songs):
-    title_w = 30
-    artist_w = 20
-    album_w = 20
-    duration_w = 8
-
-    top_border = "+" + "-"*(title_w + artist_w + album_w + duration_w + 13) + "+"
-    row_border = "+" + "-"*(title_w+2) + "+" + "-"*(artist_w+2) + "+" + "-"*(album_w+2) + "+" + "-"*(duration_w+2) + "+"
-
-    print(top_border)
-    print("|{:^{width}}|".format("({})".format(name), width=title_w + artist_w + album_w + duration_w + 13))
-    print(row_border)
-
-    print("| {:<{}} | {:<{}} | {:<{}} | {:>{}} |".format(
-        "Title", title_w,
-        "Artist", artist_w,
-        "Album", album_w,
-        "Duration", duration_w
-    ))
-    print(row_border)
-
+def display_playlist():
+    print("=" * 113)
+    print("{0:>64}".format("(Playlist Name)"))
+    print("=" * 113)
+    print("| {0:<40} | {1:<20} | {2:<30} | {3:<10} |".format("Title", "Artist", "Album", "Duration"))
+    print("=" * 113)
+    for track in tracks:
+        print("| {0:<40} | {1:<20} | {2:<30} | {3:<10} |".format(
+            track["title"],
+            track["artist"],
+            track["album"],
+            track["duration"]
+        ))
+        
     if len(songs) == 0:
         for _ in range(4):
             print("| {:<{}} | {:<{}} | {:<{}} | {:>{}} |".format(
