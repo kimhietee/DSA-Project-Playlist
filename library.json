@@ -1,24 +1,93 @@
 [
     {
-        "title": "adsaddsada",
-        "artist": "asddad",
-        "album": "asdadad",
-        "duration": "adad",
-        "genre": "asds"
+        "title": "Ayaw Tandoga",
+        "artist": "Kim",
+        "album": "mid",
+        "duration": "02:29",
+        "genre": "Explicit"
     },
     {
-        "title": "asddsa",
-        "artist": "",
-        "album": "asd",
-        "duration": "asd",
-        "genre": "d"
+        "title": "Chichinya",
+        "artist": "Ashnikko",
+        "album": "Smoochies",
+        "duration": "02:19",
+        "genre": "Electropop"
     },
-
     {
-        "title": "qwewqeqweqw",
-        "artist": "qwewqe",
-        "album": "qwewqe",
-        "duration": "ewqeeee",
-        "genre": "wqeqwew"
+        "title": "Come What May",
+        "artist": "Air Supply",
+        "album": "Latest",
+        "duration": "00:00",
+        "genre": "Soft Rock"
+    },
+    {
+        "title": "Die Your Daughter",
+        "artist": "Susannah Joffe",
+        "album": "Your Mother's Name",
+        "duration": "02:20",
+        "genre": "Alt Indie"
+    },
+    {
+        "title": "Glide",
+        "artist": "Lily Chou-Chou",
+        "album": "Koky\u00c5\u00ab",
+        "duration": "03:41",
+        "genre": "J-Pop"
+    },
+    {
+        "title": "I Want You",
+        "artist": "Mitski",
+        "album": "Retired from Sad, New Career in Business",
+        "duration": "03:04",
+        "genre": "Alt Indie"
+    },
+    {
+        "title": "Let Down",
+        "artist": "Radiohead",
+        "album": "OK Computer",
+        "duration": "03:45",
+        "genre": "Alt Rock"
+    },
+    {
+        "title": "Meteor Shower",
+        "artist": "Cavetown",
+        "album": "Owl City Ocean Eyes",
+        "duration": "04:25",
+        "genre": "Alt Indie"
+    },
+    {
+        "title": "not a lot, just forever",
+        "artist": "Adrianne Lenker",
+        "album": "songs",
+        "duration": "04:11",
+        "genre": "Alt Indie"
+    },
+    {
+        "title": "Peklat Cream",
+        "artist": "Bita and the Botflies",
+        "album": "Peklat Cream",
+        "duration": "04:23",
+        "genre": "Rock"
+    },
+    {
+        "title": "These Walls",
+        "artist": "Dua Lipa",
+        "album": "Radical Optimism",
+        "duration": "03:38",
+        "genre": "Dance Pop"
+    },
+    {
+        "title": "Twilight",
+        "artist": "B\u00c3\u00b4a",
+        "album": "Twilight",
+        "duration": "05:07",
+        "genre": "Alt Indie"
+    },
+    {
+        "title": "Visions of Gideon",
+        "artist": "Sufjan Stevens",
+        "album": "Call Me by Your Name Original Motion Picture Soundtrack",
+        "duration": "04:10",
+        "genre": "Indie Folk"
     }
 ]

@@ -1,0 +1,18 @@
+{
+  "albums": [
+    {
+      "album_name": "w",
+      "tracks": [
+        {
+          "title": "a",
+          "artist": "q",
+          "album": "w",
+          "duration": "123:01",
+          "additional_artists": "",
+          "date_added": "2025-11-29T20:04:04.202416"
+        }
+      ],
+      "date_created": "2025-11-29T20:04:04.203657"
+    }
+  ]
+}

@@ -69,16 +69,24 @@ def show_help():
 def display_playlist(name, songs):
     title_w = 30
     artist_w = 20
-    album_w = 20
-    duration_w = 8
+    album_w = 24
+    duration_w = 10
 
-    total_w = title_w + artist_w + album_w + duration_w + 13
-    top_border = "+" + "-" * total_w + "+"
-    row_border = "+" + "-" * (title_w + 2) + "+" + "-" * (artist_w + 2) + "+" + "-" * (album_w + 2) + "+" + "-" * (duration_w + 2) + "+"
+    total_w = title_w + artist_w + album_w + duration_w + 11
 
-    print(top_border)
+    def trim(text, max_w):
+        text = str(text)
+        return text[:max_w-3] + "..." if len(text) > max_w else text
+    
+    w = terminal_width()
+    key_col = 6
+    desc_col = w - key_col - 7
+    top = "+" + "-" * (key_col + desc_col + 5) + "+"
+    row = "+" + "-" * (key_col + 2) + "+" + "-" * (desc_col + 2) + "+"
+
+    print(top)
     print("|{:^{width}}|".format(f"Playlist: {name}", width=total_w))
-    print(row_border)
+    print(row)
 
     print("| {:<{}} | {:<{}} | {:<{}} | {:>{}} |".format(
         "Title", title_w,
@@ -86,7 +94,7 @@ def display_playlist(name, songs):
         "Album", album_w,
         "Duration", duration_w
     ))
-    print(row_border)
+    print(row)
 
     if len(songs) == 0:
         for _ in range(4):
@@ -96,13 +104,33 @@ def display_playlist(name, songs):
     else:
         for s in songs:
             print("| {:<{}} | {:<{}} | {:<{}} | {:>{}} |".format(
-                s.get("title", ""), title_w,
-                s.get("artist", ""), artist_w,
-                s.get("album", ""), album_w,
-                s.get("duration", "00:00"), duration_w
+                trim(s.get("title", ""), title_w), title_w,
+                trim(s.get("artist", ""), artist_w), artist_w,
+                trim(s.get("album", ""), album_w), album_w,
+                s.get("duration","00:00"), duration_w
             ))
 
-    print(row_border)
+    print(row)
+
+# sort
+def sort_playlist(songs, mode):
+    pass
+
+
+
+
+
+    # if not songs:
+    #     print("Nothing to sort.\n")
+    #     return
+    
+    # if mode == "DURATION":
+    #     songs.sort(key=lambda s: sum(int(x) * 60 ** i for i, x in enumerate(reversed(s.get("duration", "0:0").split(":")))))
+    # else:
+    #     key = mode.lower()
+    #     songs.sort(key=lambda s: s.get(key,"").lower())
+
+    # print(f"✅ Sorted by {mode}!\n")
 
 
 # ===========================
@@ -130,26 +158,56 @@ def add_song(library):
 
 def view_songs(library):
     print_boxed("Song Library")
+
     if len(library) == 0:
         print("No songs yet. Use option 1 to add songs.\n")
         return
 
-    for i, song in enumerate(library, start=1):
-        print(f"{i:>2}. {song.get('title','')} — {song.get('artist','')} ({song.get('album','')}) [{song.get('duration','')}] [{song.get('genre','')}]")
-    print()
+    while True:
+        display_playlist("Library View", library)
+        sort_menu = [
+            ("1", "Sort by Title"),
+            ("2", "Sort by Artist"),
+            ("3", "Sort by Album"),
+            ("4", "Sort by Duration"),
+            ("B", "Back")
+        ]
+        print_menu(sort_menu)
+        choice = prompt_choice("Sort Library")
+
+        c = choice.upper()
+        if c == "1":
+            sort_playlist(library, "TITLE")
+        elif c == "2":
+            sort_playlist(library, "ARTIST")
+        elif c == "3":
+            sort_playlist(library, "ALBUM")
+        elif c == "4":
+            sort_playlist(library, "DURATION")
+        elif c == "B":
+            return
+        elif c in ("H","?"):
+            show_help()
+        else:
+            print("Invalid option.\n")
 
 def search_song(library):
     print_boxed("Search Songs")
-    keyword = input("Search (title): ").lower().strip()
-    results = [s for s in library if keyword in s.get("title", "").lower()]
+    keyword = input("Search (title/artist/album): ").lower().strip()
+    
+    results = [
+        s for s in library if 
+        keyword in s.get("title", "").lower() or
+        keyword in s.get("artist", "").lower() or
+        keyword in s.get("album", "").lower()
+    ]
 
     if not results:
         print("No results found.\n")
         return
 
-    print("Search Results:")
-    for i, song in enumerate(results, start=1):
-        print(f"{i}. {song.get('title','')} — {song.get('artist','')} ({song.get('album','')}) [{song.get('duration','')}]")
+    print_boxed("Search Results")
+    display_playlist("Matches", results)
     print()
 
 def shuffle_play(library):
@@ -172,6 +230,7 @@ def shuffle_play(library):
 def create_playlist(playlists):
     print_boxed("Create Playlist")
     name = input("Playlist name: ").strip()
+
     if not name:
         print("Name cannot be empty.\n")
         return
@@ -201,8 +260,37 @@ def view_playlist(playlists):
     if name not in playlists:
         print("Playlist does not exist.\n")
         return
-    display_playlist(name, playlists[name])
+    
+    songs = playlists[name]
+    while True:
+        print_boxed(f"Playlist: {name}")
+        display_playlist(name, songs)
 
+        sort_menu = [
+            ("1", "Sort by Title"),
+            ("2", "Sort by Artist"),
+            ("3", "Sort by Album"),
+            ("4", "Sort by Duration"),
+            ("B", "Back")
+        ]
+        print_menu(sort_menu)
+        choice = prompt_choice("Sort Playlist")
+
+        c = choice.upper()
+        if c == "1":
+            sort_playlist(songs, "TITLE")
+        elif c == "2":
+            sort_playlist(songs, "ARTIST")
+        elif c == "3":
+            sort_playlist(songs, "ALBUM")
+        elif c == "4":
+            sort_playlist(songs, "DURATION")
+        elif c == "B":
+            return
+        elif c in ("H","?"):
+            show_help()
+        else:
+            print("Invalid option.\n")
 
 # ===========================
 # Queue System
@@ -245,7 +333,7 @@ def main():
         ("4", "Shuffle Play"),
         ("5", "Create Playlist"),
         ("6", "Add to Playlist"),
-        ("7", "View Playlist"),
+        ("7", "View / Sort Playlist"),
         ("8", "Add to Queue"),
         ("9", "Play Queue"),
         ("0", "Save & Exit"),
