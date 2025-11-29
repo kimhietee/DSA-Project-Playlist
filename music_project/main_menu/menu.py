@@ -1,4 +1,4 @@
-track = [
+tracks = [
     {"title": "",
     "artist": "",
     "album": "",
@@ -26,7 +26,7 @@ def display_playlist():
     print("| {0:<40} | {1:<20} | {2:<30} | {3:<10} |".format("Title", "Artist", "Album", "Duration"))
     print("=" * 113)
     for track in tracks:
-        print("{0:<40} | {1:<20} | {2:<30} | {3:<10}".format(
+        print("| {0:<40} | {1:<20} | {2:<30} | {3:<10} |".format(
             track["title"],
             track["artist"],
             track["album"],
