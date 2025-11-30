@@ -145,5 +145,82 @@
         "album": "Loveworm",
         "duration": "02:59",
         "genre": "Indie Rock"
+    }
+    {
+        "title": "Like A Raspberry",
+        "artist": "Uchuu Nekoko",
+        "album": "Kimi NO Youni Ikiretara",
+        "duration": "05:12",
+        "genre": "J-Pop"
     },
+    {
+        "title": "Exit Music (For a Film)",
+        "artist": "Radiohead",
+        "album": "OK Computer",
+        "duration": "04:27",
+        "genre": "Alt Rock"
+    },
+    {
+        "title": "Karma Police",
+        "artist": "Radiohead",
+        "album": "OK Computer",
+        "duration": "04:24",
+        "genre": "Alt Rock"
+    },
+    {
+        "title": "No Suprises",
+        "artist": "Radiohead",
+        "album": "OK Computer",
+        "duration": "03:49",
+        "genre": "Alt Rock"
+    },
+    {
+        "title": "Climbing Up The Walls",
+        "artist": "Radiohead",
+        "album": "OK Computer",
+        "duration": "04:45",
+        "genre": "Alt Rock"
+    },
+    {
+        "title": "High and Dry",
+        "artist": "Radiohead",
+        "album": "The Bends",
+        "duration": "04:17",
+        "genre": "Indie Rock"
+    },
+    {
+        "title": "Fake Plastic Trees",
+        "artist": "Radiohead",
+        "album": "The Bends",
+        "duration": "04:50",
+        "genre": "Indie Rock"
+    },
+    {
+        "title": "Just",
+        "artist": "Radiohead",
+        "album": "The Bends",
+        "duration": "03:54",
+        "genre": "Indie Rock"
+    },
+    {
+        "title": "Anthems for a Seventeen Year‐Old Girl",
+        "artist": "Broken Social Scene",
+        "album": "You Forgot It In People",
+        "duration": "04:35",
+        "genre": "Indie Rock"
+    },
+    {
+        "title": "Nope your too late i already died",
+        "artist": "i wanna be a jack-o-lantern and wifiskeleton",
+        "album": "Nope your too late i already died",
+        "duration": "01:31",
+        "genre": "Bedroom pop and sigilkore"
+    },
+    {
+        "title": "Every Breath You Take",
+        "artist": "The Police",
+        "album": "Synchronicity",
+        "duration": "03:56",
+        "genre": "Soft Rock"
+    }
 ]
