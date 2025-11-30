@@ -73,55 +73,41 @@ def display_playlist(name, songs):
     artist_w = 20
     album_w = 24
     duration_w = 10
-
     total_w = title_w + artist_w + album_w + duration_w + 11
 
     def trim(text, max_w):
         text = str(text)
         return text[:max_w-3] + "..." if len(text) > max_w else text
-    
-    w = terminal_width()
-    key_col = 6
-    desc_col = w - key_col - 7
-    top = "+" + "-" * (key_col + desc_col + 5) + "+"
-    row = "+" + "-" * (key_col + 2) + "+" + "-" * (desc_col + 2) + "+"
 
-    print(top)
-    print("|{:^{width}}|".format(f"Playlist: {name}", width=total_w))
-    print(row)
+    # If no songs, print a small empty table and return
+    total = len(songs)
+    if total == 0:
+        w = terminal_width()
+        key_col = 6
+        desc_col = w - key_col - 7
+        top = "+" + "-" * (key_col + desc_col + 5) + "+"
+        row = "+" + "-" * (key_col + 2) + "+" + "-" * (desc_col + 2) + "+"
 
-    print("| {:<{}} | {:<{}} | {:<{}} | {:>{}} |".format(
-        "Title", title_w,
-        "Artist", artist_w,
-        "Album", album_w,
-        "Duration", duration_w
-    ))
-    print(row)
-
-    if len(songs) == 0:
+        print(top)
+        print("|{:^{width}}|".format(f"Playlist: {name}", width=total_w))
+        print(row)
+        print("| {:<{}} | {:<{}} | {:<{}} | {:>{}} |".format(
+            "Title", title_w,
+            "Artist", artist_w,
+            "Album", album_w,
+            "Duration", duration_w
+        ))
+        print(row)
         for _ in range(4):
             print("| {:<{}} | {:<{}} | {:<{}} | {:>{}} |".format(
                 "", title_w, "", artist_w, "", album_w, "00:00", duration_w
             ))
-    else:
-        for s in songs:
-            print("| {:<{}} | {:<{}} | {:<{}} | {:>{}} |".format(
-                trim(s.get("title", ""), title_w), title_w,
-                trim(s.get("artist", ""), artist_w), artist_w,
-                trim(s.get("album", ""), album_w), album_w,
-                s.get("duration","00:00"), duration_w
-            ))
-
-    print(row)
-
-    # Pagination: show 10 items per page and allow user to press 'n' for next
-    page_size = 10
-    total = len(songs)
-    if total == 0:
-        w = terminal_width()
-        print("\n" + "No items to display.\n")
+        print(row)
+        print("\nNo items to display.\n")
         return
 
+    # Pagination: show `page_size` items per page and allow user to page through
+    page_size = 10
     total_pages = (total + page_size - 1) // page_size
     page = 1
 
@@ -162,13 +148,11 @@ def display_playlist(name, songs):
 
         print(row)
 
-    # Show pages and allow user to press 'n' to go to next page
     while True:
         print_page(page)
         if total_pages <= 1:
             break
 
-        # Prompt for next page
         choice = input(f"Page {page}/{total_pages} - press 'n' for next page, 'p' for previous, or Enter to continue: ").strip().lower()
         if choice == 'n' and page < total_pages:
             page += 1
@@ -476,18 +460,29 @@ class Playlist:
         if playlist not in playlists:
             print("❌ Playlist does not exist.\n")
             return
-        
-        display_playlist("Library View", library) # how songs
+        display_playlist("Library View", library)
         title = input("Song title to add: ").strip()
-        
-        song = library[title]
-        for s in playlists[playlist]:
-            if (s["title"].lower() == song["title"].lower() and
-                s["artist"].lower() == song["artist"].lower()):
-                print(f"\n❌ Song '{s['title']}' by '{s['artist']}' is already in the playlist!")
 
-        playlists[playlist].append(song.copy())
-        print(f"\n🎵 Added: {song['title']} → {playlist}")
+        # find song by title (case-insensitive); use first match
+        found = None
+        for s in library:
+            if s.get("title", "").lower() == title.lower():
+                found = s
+                break
+
+        if not found:
+            print("❌ Song not found in library.\n")
+            return
+
+        # prevent duplicates in playlist
+        for s in playlists[playlist]:
+            if (s.get("title", "").lower() == found.get("title", "").lower() and
+                s.get("artist", "").lower() == found.get("artist", "").lower()):
+                print(f"\n❌ Song '{found.get('title','')}' by '{found.get('artist','')}' is already in the playlist!\n")
+                return
+
+        playlists[playlist].append(found.copy())
+        print(f"\n🎵 Added: {found.get('title','')} → {playlist}\n")
         # for s in library:
         #     if s.get("title", "").lower() == title.lower():
         #         playlists[playlist].append(s)
@@ -700,6 +695,7 @@ def main():
         elif c == "10":
             save_data("library.json", library)
             save_data("playlists.json", playlists)
+            save_data("queue.json", queue)
             print("✅ Changes have been saved.")
         elif c == "11":
             library = delete_song(library)
@@ -707,6 +703,7 @@ def main():
         elif c == "0":
             save_data("library.json", library)
             save_data("playlists.json", playlists)
+            save_data("queue.json", queue)
             print("✅ Changes have been saved.")
             print("\nGoodbye.\n")
             break

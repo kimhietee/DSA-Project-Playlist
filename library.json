@@ -112,7 +112,7 @@
         "genre": "Indie Folk"
     },
     {
-<<<<<<< HEAD
+
         "title": "Elegy",
         "artist": "FatRat",
         "album": "BEST MUSIC",
@@ -125,12 +125,12 @@
         "album": "",
         "duration": "",
         "genre": ""
-=======
+    },
+    {
         "title": "Wet",
         "artist": "Dazey and the Scouts",
         "album": "Maggot",
         "duration": "02:52",
         "genre": "Alt Indie"
->>>>>>> 4a406e8819b0df9a05796715e97ad78b464a9c1d
     }
 ]
