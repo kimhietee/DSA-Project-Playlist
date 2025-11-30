@@ -3,6 +3,8 @@ import random
 import os
 import shutil
 
+from pprint import pprint
+
 # ===========================
 # JSON File Loader/Saver
 # ===========================
@@ -112,6 +114,70 @@ def display_playlist(name, songs):
 
     print(row)
 
+    # Pagination: show 10 items per page and allow user to press 'n' for next
+    page_size = 10
+    total = len(songs)
+    if total == 0:
+        w = terminal_width()
+        print("\n" + "No items to display.\n")
+        return
+
+    total_pages = (total + page_size - 1) // page_size
+    page = 1
+
+    def print_page(p):
+        start = (p - 1) * page_size
+        end = min(start + page_size, total)
+
+        w = terminal_width()
+        key_col = 6
+        desc_col = w - key_col - 7
+        top = "+" + "-" * (key_col + desc_col + 5) + "+"
+        row = "+" + "-" * (key_col + 2) + "+" + "-" * (desc_col + 2) + "+"
+
+        print(top)
+        header_title = f"Playlist: {name}  (Page {p}/{total_pages})"
+        print("|{:^{width}}|".format(header_title, width=total_w))
+        print(row)
+
+        print("| {:<{}} | {:<{}} | {:<{}} | {:>{}} |".format(
+            "Title", title_w,
+            "Artist", artist_w,
+            "Album", album_w,
+            "Duration", duration_w
+        ))
+        print(row)
+
+        for s in songs[start:end]:
+            t = trim(s.get("title", ""), title_w)
+            a = trim(s.get("artist", ""), artist_w)
+            al = trim(s.get("album", ""), album_w)
+            d = s.get("duration", "")
+            print("| {:<{}} | {:<{}} | {:<{}} | {:>{}} |".format(
+                t, title_w,
+                a, artist_w,
+                al, album_w,
+                d, duration_w
+            ))
+
+        print(row)
+
+    # Show pages and allow user to press 'n' to go to next page
+    while True:
+        print_page(page)
+        if total_pages <= 1:
+            break
+
+        # Prompt for next page
+        choice = input(f"Page {page}/{total_pages} - press 'n' for next page, 'p' for previous, or Enter to continue: ").strip().lower()
+        if choice == 'n' and page < total_pages:
+            page += 1
+            continue
+        elif choice == 'p' and page > 1:
+            page -= 1
+            continue
+        else:
+            break
 # sort
 '''
 sort by:
@@ -128,7 +194,7 @@ def sort_playlist(songs, mode):
 
 class TimSort:
     #class vars
-    minRUN = 32
+    minRUN = 16
     
     @staticmethod
     def calcMinRun(n):
@@ -232,7 +298,7 @@ class TimSort:
 
 def sort_playlist(songs, mode="title"):
     if not songs:
-        print("Nothing to sort.\n")
+        print("❌ Nothing to sort.\n")
         return
 
     mode = mode.lower()
@@ -280,12 +346,32 @@ def sort_playlist(songs, mode="title"):
 
 def add_song(library):
     print_boxed("Add Song")
-    title = input("Title: ").strip()
-    artist = input("Artist: ").strip()
-    album = input("Album: ").strip()
-    duration = input("Duration (MM:SS): ").strip()
-    genre = input("Genre: ").strip()
+    # title = input("Title: ").strip()
+    # artist = input("Artist: ").strip()
+    # album = input("Album: ").strip()
+    # duration = input("Duration (MM:SS): ").strip()
+    # genre = input("Genre: ").strip()
 
+    # pls don't allow empty becaue it can?
+    def get_input(label):
+        while True:
+            value = input(f"{label}: ").strip()
+            if value == "":
+                print(f"❌ {label} cannot be empty.\n")
+            else:
+                return value
+
+    title = get_input("Title")
+    artist = get_input("Artist")
+    album = get_input("Album")
+    duration = get_input("Duration (MM:SS)")
+    genre = get_input("Genre")
+
+    for song in library: #NO DUPLICATE ALLOWED!!!
+        if song["title"].lower() == title.lower() and song["artist"].lower() == artist.lower():
+            print(f"\n❌ Duplicate song detected! '{title}' by '{artist}' already exists.\n")
+            return
+        
     new_song = {
         "title": title,
         "artist": artist,
@@ -301,7 +387,7 @@ def view_songs(library):
     print_boxed("Song Library")
 
     if len(library) == 0:
-        print("No songs yet. Use option 1 to add songs.\n")
+        print("❌ No songs yet. Use option 1 to add songs.\n")
         return
 
     while True:
@@ -344,7 +430,7 @@ def search_song(library):
     ]
 
     if not results:
-        print("No results found.\n")
+        print("❌ No results found.\n")
         return
 
     print_boxed("Search Results")
@@ -353,7 +439,7 @@ def search_song(library):
 
 def shuffle_play(library):
     if not library:
-        print("No songs to shuffle.\n")
+        print("❌ No songs to shuffle.\n")
         return
 
     shuffled = library[:]
@@ -368,71 +454,127 @@ def shuffle_play(library):
 # Playlist Management
 # ===========================
 
-def create_playlist(playlists):
-    print_boxed("Create Playlist")
-    name = input("Playlist name: ").strip()
+class Playlist:
+    def create_playlist(playlists):
+        print_boxed("Create Playlist")
+        name = input("Playlist name: ").strip()
 
-    if not name:
-        print("Name cannot be empty.\n")
-        return
-    if name in playlists:
-        print("Playlist already exists.\n")
-        return
-    playlists[name] = []
-    print(f"✅ Playlist '{name}' created!\n")
-
-def add_to_playlist(library, playlists):
-    print_boxed("Add to Playlist")
-    playlist = input("Playlist name: ").strip()
-    if playlist not in playlists:
-        print("Playlist does not exist.\n")
-        return
-    title = input("Song title to add: ").strip()
-    for s in library:
-        if s.get("title", "").lower() == title.lower():
-            playlists[playlist].append(s)
-            print(f"🎵 '{title}' added to playlist '{playlist}'\n")
+        if not name:
+            print("❌ Playlist name cannot be empty.")
             return
-    print("Song not found.\n")
-
-def view_playlist(playlists):
-    print_boxed("View Playlist")
-    name = input("Playlist name: ").strip()
-    if name not in playlists:
-        print("Playlist does not exist.\n")
-        return
-    
-    songs = playlists[name]
-    while True:
-        print_boxed(f"Playlist: {name}")
-        display_playlist(name, songs)
-
-        sort_menu = [
-            ("1", "Sort by Title"),
-            ("2", "Sort by Artist"),
-            ("3", "Sort by Album"),
-            ("4", "Sort by Duration"),
-            ("B", "Back")
-        ]
-        print_menu(sort_menu)
-        choice = prompt_choice("Sort Playlist")
-
-        c = choice.upper()
-        if c == "1":
-            sort_playlist(songs, "title")
-        elif c == "2":
-            sort_playlist(songs, "artist")
-        elif c == "3":
-            sort_playlist(songs, "album")
-        elif c == "4":
-            sort_playlist(songs, "duration")
-
-        elif c == "B":
+        if name in playlists:
+            print("❌ Playlist already exists.\n")
             return
-        elif c in ("H","?"):
-            show_help()
-        else:
-            print("Invalid option.\n")
+        playlists[name] = []
+        print(f"✅ Playlist '{name}' created!\n")
+
+    def add_to_playlist(library, playlists):
+        print_boxed("Add to Playlist")
+        Playlist.show_playlists_only(playlists) # show playlists
+        playlist = input("Playlist name: ").strip()
+        
+        if playlist not in playlists:
+            print("❌ Playlist does not exist.\n")
+            return
+        
+        display_playlist("Library View", library) # how songs
+        title = input("Song title to add: ").strip()
+        
+        song = library[title]
+        for s in playlists[playlist]:
+            if (s["title"].lower() == song["title"].lower() and
+                s["artist"].lower() == song["artist"].lower()):
+                print(f"\n❌ Song '{s['title']}' by '{s['artist']}' is already in the playlist!")
+
+        playlists[playlist].append(song.copy())
+        print(f"\n🎵 Added: {song['title']} → {playlist}")
+        # for s in library:
+        #     if s.get("title", "").lower() == title.lower():
+        #         playlists[playlist].append(s)
+        #         print(f"🎵 '{title}' added to playlist '{playlist}'\n")
+        #         return
+        # print("❌ Song not found.\n")
+
+# pprint(playlists)
+        # print(playlist)
+        # print(title)
+        # print(playlists[playlist])
+        # print( i["title"] for i in playlists[playlist])
+        # for i in playlists[playlist]:
+        #     if title == i["title"]:
+        #         print("Song already exists.\n")
+        #         return
+
+        # if title == playlists[playlist][title]:
+    def show_playlists_only(pl):
+        keys = list(pl.keys())
+        if not keys:
+            print("No playlists available.")
+            return
+
+        page_size = 10
+        total = len(keys)
+        total_pages = (total + page_size - 1) // page_size
+        page = 1
+
+        while True:
+            start = (page - 1) * page_size
+            end = min(start + page_size, total)
+            for idx in range(start, end):
+                print(f"{idx+1}. {keys[idx]}")
+            print("----------")
+            if total_pages <= 1:
+                break
+            choice = input(f"Page {page}/{total_pages} - press 'n' for next, 'p' for previous, or Enter to continue: ").strip().lower()
+            if choice == 'n' and page < total_pages:
+                page += 1
+                continue
+            elif choice == 'p' and page > 1:
+                page -= 1
+                continue
+            else:
+                break
+
+    def view_playlist(playlists):
+        # pprint(playlists)    
+        print_boxed("View Playlist")
+        Playlist.show_playlists_only(playlists)
+        name = input("Playlist name: ").strip()
+        if name not in playlists:
+            print("❌ Playlist does not exist.\n")
+            return
+        
+        songs = playlists[name]
+        while True:
+            print_boxed(f"Playlist: {name}")
+            display_playlist(name, songs)
+
+            sort_menu = [
+                ("1", "Sort by Title"),
+                ("2", "Sort by Artist"),
+                ("3", "Sort by Album"),
+                ("4", "Sort by Duration"),
+                ("B", "Back")
+            ]
+            print_menu(sort_menu)
+            choice = prompt_choice("Sort Playlist")
+
+            c = choice.upper()
+            if c == "1":
+                sort_playlist(songs, "title")
+            elif c == "2":
+                sort_playlist(songs, "artist")
+            elif c == "3":
+                sort_playlist(songs, "album")
+            elif c == "4":
+                sort_playlist(songs, "duration")
+
+            elif c == "B":
+                return
+            elif c in ("H","?"):
+                show_help()
+            else:
+                print("❌ Invalid option.\n")
 
 # ===========================
 # Queue System
@@ -445,11 +587,11 @@ def queue_add(queue, library):
             queue.append(s)
             print(f"🎵 '{s.get('title','')}' added to queue!\n")
             return
-    print("Song not found.\n")
+    print("❌ Song not found.\n")
 
 def play_queue(queue):
     if not queue:
-        print("Queue is empty.\n")
+        print("❌ Queue is empty.\n")
         return
     print_boxed("Play Queue")
     print(f"▶️ Playing queue ({len(queue)} songs):")
@@ -458,7 +600,46 @@ def play_queue(queue):
     print()
     queue.clear()
 
+# ===========================
+# DELETE STUFF
+# ===========================
 
+def delete_song(library):
+    if not library:
+        print("❌ Library is empty.")
+        return library
+
+    title = input("Enter track title to delete: ").strip().lower()
+
+    # find matches
+    matches = [t for t in library if t["title"].lower() == title]
+
+    if not matches:
+        print("❌ No track with that title found.")
+        return library
+
+    # if only one, delete immediately
+    if len(matches) == 1:
+        library.remove(matches[0])
+        print("✅ Track deleted successfully.")
+        return library
+
+    # multiple tracks with the same title → choose which one
+    print("\nMultiple tracks found with the same title:")
+    for i, t in enumerate(matches, 1):
+        print(f"[{i}] {t['title']} – {t['artist']} ({t['duration']})")
+
+    try:
+        choice = int(input("Select which track to delete: "))
+        if 1 <= choice <= len(matches):
+            library.remove(matches[choice - 1])
+            print("✅ Track deleted successfully.")
+        else:
+            print("❌ Invalid option.")
+    except:
+        print("❌ Invalid input.")
+
+    return library
 # ===========================
 # MAIN PROGRAM LOOP
 # ===========================
@@ -466,7 +647,7 @@ def play_queue(queue):
 def main():
     library = load_data("library.json")
     playlists = load_data("playlists.json")
-    queue = []
+    queue = load_data("queue.json")
 
     menu = [
         ("1", "Add Song"),
@@ -475,9 +656,11 @@ def main():
         ("4", "Shuffle Play"),
         ("5", "Create Playlist"),
         ("6", "Add to Playlist"),
-        ("7", "View / Sort Playlist"),
+        ("7", "View Playlist"),
         ("8", "Add to Queue"),
         ("9", "Play Queue"),
+        ("10", "Save Changes"),
+        ("11", "Delete Song"),
         ("0", "Save & Exit"),
         ("H", "Help")
     ]
@@ -488,7 +671,7 @@ def main():
 
         choice = prompt_choice()
         if not choice:
-            print("No input. Please choose an option.\n")
+            print("❌ No input. Please choose an option.\n")
             continue
 
         c = choice.strip().upper()
@@ -505,22 +688,30 @@ def main():
         elif c == "4":
             shuffle_play(library)
         elif c == "5":
-            create_playlist(playlists)
+            Playlist.create_playlist(playlists)
         elif c == "6":
-            add_to_playlist(library, playlists)
+            Playlist.add_to_playlist(library, playlists)
         elif c == "7":
-            view_playlist(playlists)
+            Playlist.view_playlist(playlists)
         elif c == "8":
             queue_add(queue, library)
         elif c == "9":
             play_queue(queue)
+        elif c == "10":
+            save_data("library.json", library)
+            save_data("playlists.json", playlists)
+            print("✅ Changes have been saved.")
+        elif c == "11":
+            library = delete_song(library)
+            # save_data(library)   # if you have a save function
         elif c == "0":
             save_data("library.json", library)
             save_data("playlists.json", playlists)
+            print("✅ Changes have been saved.")
             print("\nGoodbye.\n")
             break
         else:
-            print("Invalid choice. Press H for help.\n")
+            print("❌ Invalid choice. Press H for help.\n")
 
 
 if __name__ == '__main__':
