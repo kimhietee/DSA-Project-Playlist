@@ -1,5 +1,12 @@
 [
     {
+        "title": "Angel",
+        "artist": "NewDad",
+        "album": "Madra",
+        "duration": "03:20",
+        "genre": "Alt Indie"
+    },
+    {
         "title": "Ayaw Tandoga",
         "artist": "Kim",
         "album": "mid",
@@ -12,6 +19,13 @@
         "album": "Smoochies",
         "duration": "02:19",
         "genre": "Electropop"
+    },
+    {
+        "title": "Class of 2013",
+        "artist": "Mitski",
+        "album": "Retired from Sad, New Career in Business",
+        "duration": "01:50",
+        "genre": "Alt Indie"
     },
     {
         "title": "Come What May",
@@ -70,6 +84,13 @@
         "genre": "Rock"
     },
     {
+        "title": "Show",
+        "artist": "Ado",
+        "album": "Zanmu",
+        "duration": "03:12",
+        "genre": "EDM"
+    },
+    {
         "title": "These Walls",
         "artist": "Dua Lipa",
         "album": "Radical Optimism",
@@ -78,7 +99,7 @@
     },
     {
         "title": "Twilight",
-        "artist": "B\u00c3\u00b4a",
+        "artist": "Boa",
         "album": "Twilight",
         "duration": "05:07",
         "genre": "Alt Indie"
@@ -91,6 +112,7 @@
         "genre": "Indie Folk"
     },
     {
+<<<<<<< HEAD
         "title": "Elegy",
         "artist": "FatRat",
         "album": "BEST MUSIC",
@@ -103,5 +125,12 @@
         "album": "",
         "duration": "",
         "genre": ""
+=======
+        "title": "Wet",
+        "artist": "Dazey and the Scouts",
+        "album": "Maggot",
+        "duration": "02:52",
+        "genre": "Alt Indie"
+>>>>>>> 4a406e8819b0df9a05796715e97ad78b464a9c1d
     }
 ]
