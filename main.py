@@ -12,9 +12,15 @@ from pprint import pprint
 def load_data(file):
     if not os.path.exists(file):
         with open(file, "w") as f:
-            f.write("[]")
+            if "playlist" in file.lower() or "queue" in file.lower():
+                f.write("{}")
+            else:
+                f.write("[]")
     with open(file, "r") as f:
-        return json.load(f)
+        data = json.load(f)
+        if "playlist" in file.lower() and isinstance(data, list):
+            return {}
+        return data
 
 def save_data(file, data):
     with open(file, "w") as f:
@@ -645,19 +651,12 @@ def main():
     queue = load_data("queue.json")
 
     menu = [
-        ("1", "Add Song"),
-        ("2", "View Songs"),
-        ("3", "Search Song"),
-        ("4", "Shuffle Play"),
-        ("5", "Create Playlist"),
-        ("6", "Add to Playlist"),
-        ("7", "View Playlist"),
-        ("8", "Add to Queue"),
-        ("9", "Play Queue"),
-        ("10", "Save Changes"),
-        ("11", "Delete Song"),
-        ("0", "Save & Exit"),
-        ("H", "Help")
+        ("1", "Library"),
+        ("2", "Playlist"),
+        ("3", "Music Queue"),
+        ("4", "Save Changes"),
+        ("5", "Save & Exit"),
+        ("H", "Help"),
     ]
 
     while True:
@@ -675,38 +674,124 @@ def main():
             continue
 
         if c == "1":
-            add_song(library)
+            l_menu = [
+                ("1", "Add Song"),
+                ("2", "Delete Songs"),
+                ("3", "View Songs"),
+                ("4", "Search Songs"),
+                ("5", "Back"),
+                ("H", "Help")
+            ]
+
+            while True:
+                print_boxed("LIBRARY")
+                print_menu(l_menu)
+
+                choice = prompt_choice()
+                if not choice:
+                    print("❌ No input. Please choose an option.\n")
+                    continue
+
+                c = choice.strip().upper()
+                if c in ("H", "?"):
+                    show_help()
+                    continue
+
+                if c == "1":
+                    add_song(library)
+                elif c == "2":
+                    library = delete_song(library)
+                    # save_data(library)   # if you have a save function
+                elif c == "3":
+                    view_songs(library)
+                elif c == "4":
+                    search_song(library)
+                elif c == "5":
+                    break
+                else:
+                    print("❌ Invalid choice. Press H for help.\n")
+
         elif c == "2":
-            view_songs(library)
+            p_menu = [
+                ("1", "Create Playlist"),
+                ("2", "Add to Playlist"),
+                ("3", "View a Playlist"),
+                ("4", "Back"),
+                ("H", "Help")
+            ]
+                
+            while True:
+                print_boxed("PLAYLIST")
+                print_menu(p_menu)
+
+                choice = prompt_choice()
+                if not choice:
+                    print("❌ No input. Please choose an option.\n")
+                    continue
+
+                c = choice.strip().upper()
+                if c in ("H", "?"):
+                    show_help()
+                    continue
+
+                if c == "1":
+                    Playlist.create_playlist(playlists)
+                elif c == "2":
+                    Playlist.add_to_playlist(library, playlists)
+                elif c == "3":
+                    Playlist.view_playlist(playlists)
+                elif c == "4":
+                    break
+                else:
+                    print("❌ Invalid choice. Press H for help.\n")
+
         elif c == "3":
-            search_song(library)
+            q_menu = [
+                ("1", "Play Queue"),
+                ("2", "Add to Queue"),
+                ("3", "Shuffle Queue"),
+                ("4", "Back"),
+                ("H", "Help")
+            ]
+
+            while True:
+                print_boxed("MUSIC QUEUE")
+                print_menu(q_menu)
+
+                choice = prompt_choice()
+                if not choice:
+                    print("❌ No input. Please choose an option.\n")
+                    continue
+
+                c = choice.strip().upper()
+                if c in ("H", "?"):
+                    show_help()
+                    continue
+
+                if c == "1":
+                    play_queue(queue)
+                elif c == "2":
+                    queue_add(queue, library)
+                elif c == "3":
+                    shuffle_play(queue)
+                elif c == "4":
+                    break
+                else:
+                    print("❌ Invalid choice. Press H for help.\n")
+
         elif c == "4":
-            shuffle_play(library)
+            save_data("library.json", library)
+            save_data("playlists.json", playlists)
+            print("✅ Changes have been saved.")
+
         elif c == "5":
-            Playlist.create_playlist(playlists)
-        elif c == "6":
-            Playlist.add_to_playlist(library, playlists)
-        elif c == "7":
-            Playlist.view_playlist(playlists)
-        elif c == "8":
-            queue_add(queue, library)
-        elif c == "9":
-            play_queue(queue)
-        elif c == "10":
             save_data("library.json", library)
             save_data("playlists.json", playlists)
             save_data("queue.json", queue)
             print("✅ Changes have been saved.")
-        elif c == "11":
-            library = delete_song(library)
-            # save_data(library)   # if you have a save function
-        elif c == "0":
-            save_data("library.json", library)
-            save_data("playlists.json", playlists)
-            save_data("queue.json", queue)
-            print("✅ Changes have been saved.")
-            print("\nGoodbye.\n")
+            print("\nThank you. Goodbye.\n")
             break
+
         else:
             print("❌ Invalid choice. Press H for help.\n")
 
