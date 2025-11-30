@@ -44,7 +44,7 @@
     {
         "title": "Glide",
         "artist": "Lily Chou-Chou",
-        "album": "Koky\u00c5\u00ab",
+        "album": "Kokyu",
         "duration": "03:41",
         "genre": "J-Pop"
     },
@@ -112,7 +112,6 @@
         "genre": "Indie Folk"
     },
     {
-
         "title": "Elegy",
         "artist": "FatRat",
         "album": "BEST MUSIC",
@@ -120,11 +119,11 @@
         "genre": "Pop"
     },
     {
-        "title": "",
-        "artist": "",
-        "album": "",
-        "duration": "",
-        "genre": ""
+        "title": "The Only Thing (Demo)",
+        "artist": "Sufjan Stevens ",
+        "album": "Carrie & Lowell",
+        "duration": "04:43",
+        "genre": "Indie"
     },
     {
         "title": "Wet",
@@ -132,5 +131,19 @@
         "album": "Maggot",
         "duration": "02:52",
         "genre": "Alt Indie"
-    }
+    },
+    {
+        "title": "Don’t Delete the Kisses",
+        "artist": "Wolf Alice",
+        "album": "Visions of a Life",
+        "duration": "04:37",
+        "genre": "French Indie"
+    },
+    {
+        "title": "Apple Cider",
+        "artist": "Beabadoobee",
+        "album": "Loveworm",
+        "duration": "02:59",
+        "genre": "Indie Rock"
+    },
 ]
