@@ -92,6 +92,7 @@ class Playlist:
         while True:
             print_boxed(f"Playlist: {name}")
             display_tracks(name, songs)
+            print(f"\nTotal Playlist Duration: {compute_total_duration(songs)}\n")
 
             sort_menu = [
                 ("1", "Sort by Title"),
@@ -119,4 +120,5 @@ class Playlist:
                 show_help()
             else:
                 print("❌ Invalid option.\n")
+
 
