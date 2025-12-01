@@ -222,5 +222,55 @@
         "album": "Synchronicity",
         "duration": "03:56",
         "genre": "Soft Rock"
+    },
+    {
+        "title": "Still Loving You",
+        "artist": "Scorpions",
+        "album": "Comeblack",
+        "duration": "06:43",
+        "genre": "Soft Rock"
+    },
+    {
+        "title": "Introduction and Rondo Capriccioso",
+        "artist": "Camille Saint-Saens",
+        "album": "Op.28",
+        "duration": "09:04",
+        "genre": "Classical"
+    },
+    {
+        "title": "Growl (Korean Ver.)",
+        "artist": "EXO",
+        "album": "XOXO",
+        "duration": "03:27",
+        "genre": "K-POP"
+    },
+    {
+        "title": "Love of a Lifetime", 
+        "artist": "Firehouse",
+        "album": "Firehouse",
+        "duration": "04:45",
+        "genre": "Heavy Ballad"
+    },
+    {
+        "title": "Can You Feel the Love Tonight",
+        "artist": "Elton John",
+        "album": "The Lion King",
+        "duration": "04:01",
+        "genre": "Soft Rock"
+    },
+    {
+        "title": "Smooth Operator",
+        "artist": "Sade",
+        "album": "The Best of Sade",
+        "duration": "04:18",
+        "genre": "Smooth Jazz"
+    },
+    {
+        "title": "마지막 첫사랑 (My First and Last)",
+        "artist": "NCT DREAM",
+        "album": "The First Single Album",
+        "duration": "04:18",
+        "genre": "K-POP"
     }
 ]
+
