@@ -63,6 +63,34 @@ class Track:
         return f"Track({self.title}, {self.artist}, {self.duration})"
 
 
+def build_sort_key(track: 'Track', primary: str = 'title'):
+    """Build a composite sort key for a Track.
+
+    Primary attribute value comes first, then a fixed tie-breaker order:
+    title, artist, album, duration (seconds), date_added.
+    All string comparisons are case-insensitive.
+    """
+    primary = (primary or 'title').lower()
+
+    def strval(v):
+        return (v or '').lower()
+
+    # primary value
+    if primary == 'duration':
+        primary_val = track.duration_to_seconds()
+    else:
+        primary_val = strval(getattr(track, primary, ''))
+
+    # tie-breakers in strict order
+    title_val = strval(track.title)
+    artist_val = strval(track.artist)
+    album_val = strval(track.album)
+    duration_val = track.duration_to_seconds()
+    date_val = getattr(track, 'date_added', '') or ''
+
+    return (primary_val, title_val, artist_val, album_val, duration_val, date_val)
+
+
 class Album:
     """Represents an album containing tracks"""
     
@@ -114,6 +142,12 @@ class Playlist:
         """Add track to playlist. Returns True if added, False if already exists"""
         if not self._track_exists(track):
             self.tracks.append(track)
+            # maintain sorted order using the strict tie-breaker rules
+            try:
+                self.sort_tracks()
+            except TypeError:
+                # if sort_tracks signature mismatch, ignore
+                pass
             return True
         return False
     
@@ -150,9 +184,13 @@ class Playlist:
             return f"{minutes} min {seconds} sec"
         return f"{seconds} sec"
     
-    def sort_tracks(self):
-        """Sort tracks by title, then artist, album, duration"""
-        self.tracks.sort(key=lambda t: (t.title, t.artist, t.album, t.duration_to_seconds()))
+    def sort_tracks(self, mode: str = 'title'):
+        """Sort tracks using the composite key. `mode` is the primary attribute.
+
+        Tie-breakers always follow: title, artist, album, duration, date_added.
+        """
+        mode = (mode or 'title').lower()
+        self.tracks.sort(key=lambda t: build_sort_key(t, primary=mode))
     
     def to_dict(self) -> dict:
         return {

@@ -291,25 +291,33 @@ def sort_playlist(songs, mode="title"):
         print("❌ Nothing to sort.\n")
         return
 
-    mode = mode.lower()
+    mode = (mode or 'title').lower()
 
-    # Duration: convert MM:SS → seconds
-    if mode == "duration":
-        def key_func(s):
-            mm, ss = s.get("duration", "0:0").split(":")
+    def duration_seconds(s):
+        mm_ss = s.get("duration", "0:0")
+        try:
+            mm, ss = mm_ss.split(":")
             return int(mm) * 60 + int(ss)
-    else:
-        # title / artist / album
-        key_func = lambda s: s.get(mode, "").lower()
+        except Exception:
+            return 0
 
-    # Build sortable array for your TimSort
-    sortable = [(key_func(s), i, s) for i, s in enumerate(songs)]
+    def composite_key(s):
+        # primary value first
+        if mode == 'duration':
+            primary = duration_seconds(s)
+        else:
+            primary = (s.get(mode, '') or '').lower()
 
-    TimSort().timsort(sortable)
+        # tie-breakers in strict order: title, artist, album, duration, date_added
+        title = (s.get('title', '') or '').lower()
+        artist = (s.get('artist', '') or '').lower()
+        album = (s.get('album', '') or '').lower()
+        duration_val = duration_seconds(s)
+        date_val = s.get('date_added', '') or ''
 
-    # write back sorted songs
-    for i in range(len(songs)):
-        songs[i] = sortable[i][2]
+        return (primary, title, artist, album, duration_val, date_val)
+
+    songs.sort(key=composite_key)
 
 
 # def sort_playlist(songs, mode):

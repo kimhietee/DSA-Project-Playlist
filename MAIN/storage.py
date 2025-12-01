@@ -73,8 +73,14 @@ class StorageManager:
             return []
         
         tracks = [Track.from_dict(t) for t in data['tracks']]
-        # Sort by title, artist, album, duration
-        tracks.sort(key=lambda t: (t.title, t.artist, t.album, t.duration_to_seconds()))
+        # Sort by title, artist, album, duration, then date_added as final tie-breaker
+        tracks.sort(key=lambda t: (
+            (t.title or '').lower(),
+            (t.artist or '').lower(),
+            (t.album or '').lower(),
+            t.duration_to_seconds(),
+            getattr(t, 'date_added', '') or ''
+        ))
         return tracks
     
     def delete_track(self, title: str, artist: str, album: str) -> bool:
