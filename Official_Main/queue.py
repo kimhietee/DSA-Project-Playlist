@@ -16,19 +16,37 @@ def queue_add(queue, library):
     print("❌ Song not found.\n")
 
 def play_queue(queue):
+    items = queue["items"]
+    
     if not queue:
         print("❌ Queue is empty.\n")
         return
-    print_boxed("Play Queue")
-    print(f"▶️ Playing queue ({len(queue)} songs):")
-    for s in queue:
-        print(f"🎶 {s.get('title','')} — {s.get('artist','')}")
-    print()
-    queue.clear()
+    print_boxed("Queue")
 
-def shuffle_queue(queue):
-    random.shuffle(queue)
+    show_now_playing(queue)
+    
+    total = compute_total_duration(items)
+    print(f"\nTotal Queue Duration: {total}\n")
+    
+    for s in items:
+        print(f"🎶 {s['title']} — {s['artist']}") ({s['duration']})")
+    print()
+
+def shuffle_play(queue):
+    items = queue["items"]
+
+    if not items:
+        print("No songs to shuffle.\n")
+        return
+
+    for i in range(len(items)):
+        j = (i * 2 + 1) % len(items)
+        items[i], items[j] = items[j], items[i]
+
+    print_boxed("Shuffle Queue")
     print("🔀 Queue shuffled!\n")
+    show_now_playing(queue)
+    print()
 
 def view_queue(queue):
     print_boxed("Queue")
@@ -64,4 +82,5 @@ def view_queue(queue):
             show_help()
         else:
             print("Invalid option.\n")
+
 
