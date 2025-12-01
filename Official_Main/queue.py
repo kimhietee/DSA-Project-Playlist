@@ -6,8 +6,12 @@ def queue_add(queue, library):
     title = input("Song title to queue: ").strip().lower()
     for s in library:
         if s.get("title","").lower() == title:
-            queue.append(s)
+            queue["items"].append(s)
             print(f"🎵 '{s.get('title','')}' added to queue!\n")
+
+            if queue["_now_playing"] is None:
+                queue["_now_playing"] = s
+                
             return
     print("❌ Song not found.\n")
 
@@ -60,3 +64,4 @@ def view_queue(queue):
             show_help()
         else:
             print("Invalid option.\n")
+
