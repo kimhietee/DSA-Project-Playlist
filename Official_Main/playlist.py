@@ -1,4 +1,4 @@
-from ui import print_boxed, display_tracks, print_menu, prompt_choice, show_help, terminal_width
+from ui import print_boxed, display_tracks, print_menu, prompt_choice, show_help, terminal_width, sort_playlist
 from sorting import sort_tracks
 
 class Playlist:
@@ -119,3 +119,4 @@ class Playlist:
                 show_help()
             else:
                 print("❌ Invalid option.\n")
+
