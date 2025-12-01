@@ -8,15 +8,14 @@
             "genre": "Soft Rock"
         }
     ],
-
     "Kim's Favorite Songs": [
         {
-        "title": "Elegy",
-        "artist": "FatRat",
-        "album": "BEST MUSIC",
-        "duration": "3:0",
-        "genre": "Pop"
-    },
+            "title": "Elegy",
+            "artist": "FatRat",
+            "album": "BEST MUSIC",
+            "duration": "3:0",
+            "genre": "Pop"
+        },
         {
             "title": "Come What May",
             "artist": "Air Supply",
@@ -25,11 +24,11 @@
             "genre": "Soft Rock"
         },
         {
-        "title": "Ayaw Tandoga",
-        "artist": "Kim",
-        "album": "mid",
-        "duration": "02:29",
-        "genre": "Explicit"
-    }
+            "title": "Ayaw Tandoga",
+            "artist": "Kim",
+            "album": "mid",
+            "duration": "02:29",
+            "genre": "Explicit"
+        }
     ]
 }
