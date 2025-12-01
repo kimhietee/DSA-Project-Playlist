@@ -9,6 +9,11 @@ def main():
     playlists = load_data("playlists.json")
     queue = load_data("queue.json")
 
+    if "items" not in queue:
+        queue["items"] = []
+    if "_now_playing" not in queue:
+        queue["_now _playing"] = None
+
     menu = [
         ("1", "Library"),
         ("2", "Playlist"),
@@ -161,3 +166,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
