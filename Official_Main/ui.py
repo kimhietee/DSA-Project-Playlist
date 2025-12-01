@@ -7,6 +7,21 @@ def terminal_width(default=80):
     except Exception:
         return default
 
+def duration_to_seconds(d):
+    try:
+        mm, ss = d.split(":")
+        return int(mm) * 60 + int(ss)
+    except:
+        return 0
+        
+def seconds_to_hhmmss(total):
+    h = total // 3600
+    m = (total % 3600) // 60
+    s = total % 60
+    if h > 0:
+        return f"{h:02}:{m:02}:{s:02}"
+    return f"{m:02}:{s:02}"
+
 def print_boxed(title):
     w = terminal_width()
     line = "+" + "-" * (w - 2) + "+"
@@ -280,4 +295,5 @@ def sort_playlist(songs, mode="title"):
         return (primary, title, artist, album, duration_val, date_val)
 
     songs.sort(key=composite_key)
+
 
