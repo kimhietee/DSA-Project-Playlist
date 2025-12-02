@@ -31,7 +31,7 @@
         "title": "Come What May",
         "artist": "Air Supply",
         "album": "Latest",
-        "duration": "00:00",
+        "duration": "03:00",
         "genre": "Soft Rock"
     },
     {
@@ -115,7 +115,7 @@
         "title": "Elegy",
         "artist": "FatRat",
         "album": "BEST MUSIC",
-        "duration": "3:0",
+        "duration": "03:40",
         "genre": "Pop"
     },
     {
@@ -245,7 +245,7 @@
         "genre": "K-POP"
     },
     {
-        "title": "Love of a Lifetime", 
+        "title": "Love of a Lifetime",
         "artist": "Firehouse",
         "album": "Firehouse",
         "duration": "04:45",
@@ -266,11 +266,10 @@
         "genre": "Smooth Jazz"
     },
     {
-        "title": "마지막 첫사랑 (My First and Last)",
-        "artist": "NCT DREAM",
-        "album": "The First Single Album",
+        "title": "Sample",
+        "artist": "Kim",
+        "album": "Chuuchuu",
         "duration": "04:18",
-        "genre": "K-POP"
+        "genre": "Random"
     }
 ]
-
