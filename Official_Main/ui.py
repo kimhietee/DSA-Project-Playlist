@@ -146,21 +146,10 @@ def display_tracks(name, songs):
         else:
             break
 
-# sort
-'''
-sort by:
-title
-artist
-album
-duration
-
-'''
-
 def sort_playlist(songs, mode):
     pass
 
 class TimSort:
-    #class vars
     minRUN = 16
     
     @staticmethod
@@ -171,7 +160,6 @@ class TimSort:
             n >>= 1
         return n + r
         
-    # Insertion sort for small ranges
     @staticmethod
     def insertionSort(arr, left, right):
         for i in range(left + 1, right + 1):
@@ -182,7 +170,6 @@ class TimSort:
                 j -= 1
             arr[j + 1] = key
 
-    # Merge two sorted subarrays [l..m] and [m+1..r]
     @staticmethod
     def merge(arr, l, m, r):
         left = arr[l:m+1]
@@ -206,23 +193,19 @@ class TimSort:
             j += 1
             k += 1
 
-    # Detect ascending/descending run starting at index "start"
     @staticmethod
     def findRun(arr, start, n):
         end = start + 1
         if end == n: return end
         if arr[end] < arr[start]:
-            # descending
             while end < n and arr[end] < arr[end - 1]:
                 end += 1
             arr[start:end] = reversed(arr[start:end])
         else:
-            # ascending
             while end < n and arr[end] >= arr[end - 1]:
                 end += 1
         return end
 
-    # Timsort main function
     @staticmethod
     def timsort(arr):
         n = len(arr)
@@ -261,8 +244,6 @@ class TimSort:
             runs[-1] = (l1, r2)
 
 
-# sort_playlist = TimSort().timsort
-
 def sort_playlist(songs, mode="title"):
     if not songs:
         print("❌ Nothing to sort.\n")
@@ -279,13 +260,11 @@ def sort_playlist(songs, mode="title"):
             return 0
 
     def composite_key(s):
-        # primary value first
         if mode == 'duration':
             primary = duration_seconds(s)
         else:
             primary = (s.get(mode, '') or '').lower()
 
-        # tie-breakers in strict order: title, artist, album, duration, date_added
         title = (s.get('title', '') or '').lower()
         artist = (s.get('artist', '') or '').lower()
         album = (s.get('album', '') or '').lower()
