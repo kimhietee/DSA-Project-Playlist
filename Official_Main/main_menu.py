@@ -2,17 +2,17 @@ from data_storage import load_data, save_data
 from ui import print_boxed, print_menu, prompt_choice, show_help
 from library import add_song, view_songs, delete_song, search_song
 from playlist import Playlist
-from queue import queue_add, shuffle_queue, play_queue, view_queue
+from queueue import queue_add, shuffle_play, play_queue, view_queue
 
 def main():
     library = load_data("library.json")
     playlists = load_data("playlists.json")
     queue = load_data("queue.json")
 
-    if "items" not in queue:
-        queue["items"] = []
-    if "_now_playing" not in queue:
-        queue["_now _playing"] = None
+    # if "items" not in queue:
+    #     queue["items"] = []
+    # if "_now_playing" not in queue:
+    #     queue["_now _playing"] = None
 
     menu = [
         ("1", "Library"),
@@ -140,8 +140,8 @@ def main():
                 elif c == "3":
                     view_queue(queue)
                 elif c == "4":
-                    shuffle_queue(queue)
-                elif c == "b":
+                    shuffle_play(queue)
+                elif c == "B":
                     break
                 else:
                     print("❌ Invalid choice. Press H for help.\n")
