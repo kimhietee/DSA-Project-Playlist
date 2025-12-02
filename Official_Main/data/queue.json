@@ -1,1 +1,51 @@
-[]
+[
+    {
+        "title": "Wet",
+        "artist": "Dazey and the Scouts",
+        "album": "Maggot",
+        "duration": "02:52",
+        "genre": "Alt Indie"
+    },
+    {
+        "title": "Let Down",
+        "artist": "Radiohead",
+        "album": "OK Computer",
+        "duration": "03:45",
+        "genre": "Alt Rock"
+    },
+    {
+        "title": "Just",
+        "artist": "Radiohead",
+        "album": "The Bends",
+        "duration": "03:54",
+        "genre": "Indie Rock"
+    },
+    {
+        "title": "Class of 2013",
+        "artist": "Mitski",
+        "album": "Retired from Sad, New Career in Business",
+        "duration": "01:50",
+        "genre": "Alt Indie"
+    },
+    {
+        "title": "Smooth Operator",
+        "artist": "Sade",
+        "album": "The Best of Sade",
+        "duration": "04:18",
+        "genre": "Smooth Jazz"
+    },
+    {
+        "title": "Every Breath You Take",
+        "artist": "The Police",
+        "album": "Synchronicity",
+        "duration": "03:56",
+        "genre": "Soft Rock"
+    },
+    {
+        "title": "Karma Police",
+        "artist": "Radiohead",
+        "album": "OK Computer",
+        "duration": "04:24",
+        "genre": "Alt Rock"
+    }
+]
