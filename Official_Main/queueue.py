@@ -1,52 +1,38 @@
 from ui import print_boxed, display_tracks, print_menu, prompt_choice, show_help
-from sorting import sort_tracks 
+from sorting import sort_tracks
 import random
 
 def queue_add(queue, library):
     title = input("Song title to queue: ").strip().lower()
     for s in library:
         if s.get("title","").lower() == title:
-            queue["items"].append(s)
+            queue.append(s)
             print(f"🎵 '{s.get('title','')}' added to queue!\n")
-
-            if queue["_now_playing"] is None:
-                queue["_now_playing"] = s
-                
             return
     print("❌ Song not found.\n")
 
 def play_queue(queue):
-    items = queue["items"]
-    
     if not queue:
         print("❌ Queue is empty.\n")
         return
-    print_boxed("Queue")
-
-    show_now_playing(queue)
-    
-    total = compute_total_duration(items)
-    print(f"\nTotal Queue Duration: {total}\n")
-    
-    for s in items:
-        print(f"🎶 {s['title']} — {s['artist']}") ({s['duration']})")
+    print_boxed("Play Queue")
+    print(f"▶️ Playing queue ({len(queue)} songs):")
+    for s in queue:
+        print(f"🎶 {s.get('title','')} — {s.get('artist','')}")
     print()
+    queue.clear()
 
 def shuffle_play(queue):
-    items = queue["items"]
-
-    if not items:
-        print("No songs to shuffle.\n")
+    if not queue:
+        print("❌ No songs to shuffle.\n")
         return
 
-    for i in range(len(items)):
-        j = (i * 2 + 1) % len(items)
-        items[i], items[j] = items[j], items[i]
-
-    print_boxed("Shuffle Queue")
-    print("🔀 Queue shuffled!\n")
-    show_now_playing(queue)
-    print()
+    shuffled = queue[:]
+    random.shuffle(shuffled)
+    first = shuffled[0]
+    print_boxed("Shuffle Play")
+    print(f"🔀 Shuffling {len(shuffled)} songs...")
+    print(f"🎶 Now playing: {first.get('title','')} — {first.get('artist','')}\n")
 
 def view_queue(queue):
     print_boxed("Queue")
